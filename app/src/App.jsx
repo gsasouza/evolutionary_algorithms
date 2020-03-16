@@ -5,9 +5,9 @@ import {
   LineChart,
   ResponsiveContainer,
   Line,
-  ReferenceLine,
   ReferenceDot,
   CartesianGrid,
+  ReferenceLine,
   XAxis,
   YAxis
 } from "recharts";
@@ -56,6 +56,7 @@ function App() {
       <div className="container">
         <div className="label-container">
           <h2 className="label">{`Fitness: ${fitness}`}</h2>
+          <h2 className="label">{`Valor: ${value}`}</h2>
         </div>
         <ResponsiveContainer aspect={6}>
           <LineChart
@@ -70,17 +71,17 @@ function App() {
               isAnimationActive={false}
             />
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
+            <XAxis dataKey="name" type="number" tickCount={data.length}/>
+            <YAxis domain={['auto', 'auto']}/>
 
-            <ReferenceLine x={Math.round(value)} stroke="#DB001C" />
+            <ReferenceLine x={value} stroke="#DB001C" />
 
             <ReferenceDot
               r={5}
               fill="#DB001C"
               stroke="#000"
-              y={-30}
-              x={Math.round(value)}
+              y={0}
+              x={value}
             />
             {population &&
               population.map((individual, index) => (
@@ -88,9 +89,9 @@ function App() {
                   r={4}
                   fill="#71c842"
                   stroke="#71c842"
-                  y={-30}
+                  y={0}
                   key={index}
-                  x={Math.round(individual)}
+                  x={individual}
                 />
               ))}
           </LineChart>

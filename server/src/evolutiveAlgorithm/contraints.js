@@ -1,19 +1,41 @@
-import { BEST_RESULT, getItem } from "../utils";
+// weierstrass
+
+function g(x, n) {
+  x *= Math.pow(4.0, n);
+  const ax = Math.abs(x);
+  const fx = Math.floor(ax);
+  return Math.pow(3.0 / 4.0, n) * Math.abs(ax - fx - (fx % 2));
+}
+
+// given x and m, returns g0(x) + g1(x) + ... + gm(x)
+function gsum(x, m) {
+  let rslt = 0.0;
+  for (let n = 0; n <= m; n++) {
+    rslt += g(x, n);
+  }
+  return rslt;
+}
+
+
+const weierstrassDomain = [0, 1]
+const weierstrassFunction = x => gsum(x, 100);
 
 export const getRandomNumberInInterval = (min = DOMAIN[0], max = DOMAIN[1]) =>
   Math.random() * (max - min + 1) + min;
 
-export const POPULATION_SIZE = 5;
+export const POPULATION_SIZE = 100;
 
-export const TEST_FUNCTION = x =>
-  2 * Math.cos(0.39 * x) +
-  5 * Math.sin(0.5 * x) +
-  0.5 * Math.cos(0.1 * x) +
-  10 * Math.sin(0.7 * x) +
-  5 * Math.sin(1 * x) +
-  5 * Math.sin(0.35 * x);
+// export const TEST_FUNCTION = x =>
+//   2 * Math.cos(0.39 * x) +
+//   5 * Math.sin(0.5 * x) +
+//   0.5 * Math.cos(0.1 * x) +
+//   10 * Math.sin(0.7 * x) +
+//   5 * Math.sin(1 * x) +
+//   5 * Math.sin(0.35 * x);
 
-export const DOMAIN = [0, 100];
+// export const DOMAIN = [0, 100];
+export const TEST_FUNCTION = weierstrassFunction
+export const DOMAIN = weierstrassDomain;
 
 export const CREATE_INDIVIDUAL = () => getRandomNumberInInterval();
 
@@ -46,8 +68,8 @@ const tournamentSelection = (list, bestResult) => {
 const elitismSelection = (individual, bestResult) => (Number.parseFloat(individual.value) + Number.parseFloat(bestResult.value)) / 2;
 
 export const CROSS_OVER_INDIVIDUAL = (individual, bestResult, list) => {
-  // return tournamentSelection(list, bestResult);
-  return elitismSelection(individual, bestResult)
+  return tournamentSelection(list, bestResult);
+  // return elitismSelection(individual, bestResult)
 };
 
 export const MUTATE_INDIVIDUAL = (individual, TAX_MUT) => {
@@ -125,3 +147,4 @@ export const MUTATION_SETUP = () => {
     FITNESS_THRESHOLD
   };
 };
+

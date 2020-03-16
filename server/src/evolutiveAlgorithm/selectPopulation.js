@@ -18,7 +18,7 @@ import { MASTER_PROCESS_TYPES } from "../cluster/handleMaster";
 import { handleCreatedIndividuals } from "./createPopulation";
 import handleNewResult from "../graphql/subscriptions/handleNewResult";
 
-const DELAY = 100;
+const DELAY = 50;
 
 export const selectIndividual = async ({ payload }) => {
   const { mutationRate, resultList, individual, bestResult } = payload;

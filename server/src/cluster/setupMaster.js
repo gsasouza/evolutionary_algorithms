@@ -5,22 +5,19 @@ import { createGraphQLServer } from "../graphql/server";
 import {
   BEST_RESULT,
   GENERATIONS,
-  PAST_LIST, PAST_POPULATION_MEAN_LIST,
+  PAST_LIST,
+  PAST_POPULATION_MEAN_LIST,
   POPULATION_LIST,
   redis,
   STEPS,
   TESTED_LIST
 } from "../utils";
 
+import { MUTATION_SETUP } from "../evolutiveAlgorithm/contraints";
+
 global.workers = [];
 global.step = STEPS.CREATE;
-global.mutationConfig = {
-  baseRate: 0.1,
-  rate: 0.1,
-  generationsWithRate: 0,
-  maxGenerationsWithRate: 0,
-  lastChange: null
-}
+global.mutationConfig = MUTATION_SETUP();
 
 const cpuCount = os.cpus().length;
 

@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start:terminal": "export TERMINAL=true && yarn start",
+    "measure:performance": "export TERMINAL=true && NODE_ENV=production node --prof build",
     "start": "node build",
     "build": "webpack --config webpack.prod.config.js --progress",
     "dev": "webpack --watch --progress --config webpack.config.js",

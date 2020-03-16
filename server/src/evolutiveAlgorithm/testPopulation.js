@@ -44,60 +44,36 @@ export const handleTestedIndividuals = () => {
 };
 
 const adjustMutationRate = async currentBestResult => {
-  const THRESHOLD = 0.0000000000001;
-  const LAST_COUNT = 100;
-
   const {
-    generationsWithRate,
-    lastChange,
-    maxGenerationsWithRate,
-    baseRate
+    shouldIncreaseRate,
+    increaseRate,
+    decreaseRate,
+    shouldReturnToBaseRate,
+    returnToBaseRate,
+    shouldDecrease,
+    LAST_COUNT,
+    FITNESS_THRESHOLD
   } = global.mutationConfig;
 
-  if (maxGenerationsWithRate) {
-    // DIVERGE
-    if (generationsWithRate >= maxGenerationsWithRate) {
-      if (lastChange && lastChange === 'decrease') {
-        global.mutationConfig = {
-          ...global.mutationConfig,
-          generationsWithRate: 0,
-          rate: baseRate * 10,
-          maxGenerationsWithRate: LAST_COUNT / 2,
-          lastChange: 'increase',
-        };
-        return
-      }
-      global.mutationConfig = {
-        ...global.mutationConfig,
-        generationsWithRate: 0,
-        rate: baseRate,
-        maxGenerationsWithRate: 0,
-        lastChange: null
-      };
-
-    }
-    return;
-  }
-
+  if (shouldIncreaseRate()) return increaseRate();
+  if (shouldReturnToBaseRate()) return returnToBaseRate();
+  if (!shouldDecrease()) return;
 
   const pastResults = await getList(PAST_LIST);
+
+  if (pastResults < LAST_COUNT) return;
+
   const lastResults = pastResults.slice(
     Math.max(pastResults.length - LAST_COUNT, 0)
   );
 
   const lastResultsMean =
-    lastResults.reduce((acc, cur) => acc + Number.parseFloat(cur), 0) / lastResults.length;
+    lastResults.reduce((acc, cur) => acc + Number.parseFloat(cur), 0) /
+    lastResults.length;
   // CONVERGE
 
-  if (Math.abs(lastResultsMean - currentBestResult.result) < THRESHOLD) {
-    global.mutationConfig = {
-      ...global.mutationConfig,
-      generationsWithRate: 0,
-      rate: baseRate / 10,
-      maxGenerationsWithRate: LAST_COUNT,
-      lastChange: 'decrease'
-    };
-  }
+  if (Math.abs(lastResultsMean - currentBestResult.result) < FITNESS_THRESHOLD)
+    return decreaseRate();
 };
 
 const handleSetupSelection = async () => {
@@ -111,7 +87,11 @@ const handleSetupSelection = async () => {
       const worker = getBalancedWorker(index);
       worker.send({
         type: WORKER_PROCESS_TYPES.SELECT_INDIVIDUAL,
-        payload: { individual, mutationConfig: global.mutationConfig, resultList }
+        payload: {
+          individual,
+          mutationRate: global.mutationConfig.getRate(),
+          resultList
+        }
       });
     });
 };

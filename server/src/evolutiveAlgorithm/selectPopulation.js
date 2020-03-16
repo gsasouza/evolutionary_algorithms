@@ -21,9 +21,9 @@ import handleNewResult from "../graphql/subscriptions/handleNewResult";
 const DELAY = 100;
 
 export const selectIndividual = async ({ payload }) => {
-  const { mutationConfig, resultList } = payload;
+  const { mutationRate, resultList } = payload;
   const newIndividual = await CROSS_OVER_INDIVIDUAL(resultList);
-  const mutatedIndividual = MUTATE_INDIVIDUAL(newIndividual, mutationConfig);
+  const mutatedIndividual = MUTATE_INDIVIDUAL(newIndividual, mutationRate);
   addItemToList(POPULATION_LIST, mutatedIndividual, () =>
     process.send({ type: MASTER_PROCESS_TYPES.SELECTED_INDIVIDUALS })
   );
@@ -46,10 +46,7 @@ const handleRepeat = () => {
 };
 
 const persistResults = async () => {
-  global.mutationConfig = {
-    ...global.mutationConfig,
-    generationsWithRate: global.mutationConfig.generationsWithRate + 1
-  };
+  global.mutationConfig.increaseGenerationWithRate();
 
   const generation = (await getItem(GENERATIONS)) || 1;
   const bestResult = await getItem(BEST_RESULT);
@@ -58,7 +55,7 @@ const persistResults = async () => {
   redis.set(GENERATIONS, `${Number.parseInt(generation) + 1}`);
 
   if (process.env.TERMINAL)
-    return console.log(`${Number.parseInt(generation)}# FITNESS: ${result}, MUTATION RATE: ${global.mutationConfig.rate}`);
+    return console.log(`${Number.parseInt(generation)}# FITNESS: ${result}, MUTATION RATE: ${global.mutationConfig.getRate()}`);
 
   const results = await getList(TESTED_LIST);
   const population = await getList(POPULATION_LIST);

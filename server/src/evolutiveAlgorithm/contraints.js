@@ -25,8 +25,7 @@ const combat = (individualA, individualB) => {
   return resultA > resultB ? objA : objB;
 };
 
-export const CROSS_OVER_INDIVIDUAL = async list => {
-  const bestResult = await getItem(BEST_RESULT);
+const tournamentSelection = (list, bestResult) => {
   const mother = combat(
     list[Math.round(getRandomNumberInInterval(0, POPULATION_SIZE - 2))],
     list[Math.round(getRandomNumberInInterval(0, POPULATION_SIZE - 2))]
@@ -39,9 +38,16 @@ export const CROSS_OVER_INDIVIDUAL = async list => {
   return (
     (Number.parseFloat(mother.value) +
       Number.parseFloat(father.value) +
-      Number.parseFloat(JSON.parse(bestResult).value)) /
+      Number.parseFloat(bestResult.value)) /
     3
   );
+}
+
+const elitismSelection = (individual, bestResult) => (Number.parseFloat(individual.value) + Number.parseFloat(bestResult.value)) / 2;
+
+export const CROSS_OVER_INDIVIDUAL = (individual, bestResult, list) => {
+  // return tournamentSelection(list, bestResult);
+  return elitismSelection(individual, bestResult)
 };
 
 export const MUTATE_INDIVIDUAL = (individual, TAX_MUT) => {

@@ -88,9 +88,10 @@ const handleSetupSelection = async () => {
       worker.send({
         type: WORKER_PROCESS_TYPES.SELECT_INDIVIDUAL,
         payload: {
-          individual,
+          individual: JSON.parse(individual),
           mutationRate: global.mutationConfig.getRate(),
-          resultList
+          resultList,
+          bestResult
         }
       });
     });

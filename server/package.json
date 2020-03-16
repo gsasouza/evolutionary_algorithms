@@ -35,8 +35,10 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
+    "start:terminal": "export TERMINAL=true && yarn start",
     "start": "node build",
     "build": "webpack --config webpack.prod.config.js --progress",
-    "dev": "webpack --watch --progress --config webpack.config.js"
+    "dev": "webpack --watch --progress --config webpack.config.js",
+    "update-schema": "babel-node --extensions \".es6,.js,.es,.jsx,.mjs,.ts,.tsx\" ./scripts/updateSchema.js -i \"[]\" "
   }
 }

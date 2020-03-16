@@ -6,16 +6,24 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "apollo-link": "^1.2.13",
+    "apollo-link-ws": "^1.0.19",
     "babel-plugin-relay": "^9.0.0",
+    "graphql": "^14.6.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-relay": "^9.0.0",
     "react-scripts": "3.4.0",
-    "recharts": "^1.8.5"
+    "recharts": "^1.8.5",
+    "relay-hooks": "^3.2.0",
+    "relay-runtime": "^9.0.0",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "relay": "relay-compiler --watchman false --src ./src --schema data/schema.graphql",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -32,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "relay-compiler": "^9.0.0"
   }
 }

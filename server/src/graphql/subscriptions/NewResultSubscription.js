@@ -1,5 +1,10 @@
-import { GraphQLFloat, GraphQLInt, GraphQLObjectType } from "graphql";
-import pubSub, { EVENTS } from './pubsub'
+import {
+  GraphQLFloat,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType
+} from "graphql";
+import pubSub, { EVENTS } from "./pubsub";
 
 const NewResultPayloadType = new GraphQLObjectType({
   name: "NewResultPayload",
@@ -8,9 +13,21 @@ const NewResultPayloadType = new GraphQLObjectType({
       type: GraphQLFloat,
       resolve: ({ fitness }) => fitness
     },
+    value: {
+      type: GraphQLFloat,
+      resolve: ({ value }) => value
+    },
     generation: {
       type: GraphQLInt,
       resolve: ({ generation }) => generation
+    },
+    population: {
+      type: new GraphQLList(GraphQLFloat),
+      resolve: ({ population }) => population
+    },
+    populationResultMean: {
+      type: GraphQLFloat,
+      resolve: ({ populationResultMean }) => populationResultMean
     }
   })
 });

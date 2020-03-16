@@ -1,4 +1,6 @@
 import React from "react";
+import { useQuery } from "relay-hooks";
+import graphql from "babel-plugin-relay/macro";
 import {
   LineChart,
   ResponsiveContainer,
@@ -9,65 +11,51 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import {
-  generateChartData,
-  executeIteration,
-  TEST_FUNCTION
-} from "./algorithms";
 
 import "./app.css";
+import NewResultSubscription from "./subscription/NewResultSubscription";
+import { getCurve } from "./utils";
 
-const data = generateChartData();
+const data = getCurve();
 
-const INTERVAL = 50;
-
-const useValues = () => {
-  const [years, setYears] = React.useState(0);
-  const [bestValue, setBest] = React.useState(null);
-  const [population, setPopulation] = React.useState([]);
-  const [lastValues, setLastValues] = React.useState([]);
-
-  const execute = React.useCallback(data => {
-    const result = executeIteration(data);
-    const bestValueIndividual = result.population[result.bestResultIndex];
-    setBest(bestValueIndividual);
-    setYears(result.years);
-    setLastValues(value => [
-      ...value,
-      {
-        value: TEST_FUNCTION(bestValueIndividual).toFixed(4),
-        name: result.years
-      }
-    ]);
-    setPopulation(
-      result.population.filter((_, i) => i !== result.bestResultIndex)
-    );
-    setTimeout(() => execute(result), INTERVAL);
-  }, []);
-
-  React.useEffect(() => {
-    execute();
-  }, [execute]);
-
-  return {
-    years,
-    bestValue,
-    population,
-    lastValues
-  };
-};
+const query = graphql`
+  query AppQuery {
+    results {
+      fitness
+      generation
+      value
+      population
+      pastResults
+      populationResultsMean
+    }
+  }
+`;
 
 function App() {
-  const { years, bestValue, lastValues, population } = useValues();
+  React.useEffect(() => {
+    NewResultSubscription();
+  }, []);
+  const { props } = useQuery(
+    query,
+    {},
+    {
+      fetchPolicy: "store-or-network", //default
+      networkCacheConfig: undefined
+    }
+  );
+
+  if (!props) return <div>Loading...</div>;
+
+  const { generation, fitness, value, population = [], pastResults, populationResultsMean } = props.results;
+  const generationsData = pastResults.map((value, index) => ({ name: index, value, populationMean: populationResultsMean[index] }));
+
   return (
     <>
+      <h1>Algoritimos Evolutivos</h1>
+
       <div className="container">
-        <h1>Algoritimos Evolutivos</h1>
         <div className="label-container">
-          {/*<h2 className="label">{`Iterações: ${years}`}</h2>*/}
-          <h2 className="label">{`Máximo valor atual: ${TEST_FUNCTION(
-            bestValue
-          ).toFixed(4)}`}</h2>
+          <h2 className="label">{`Fitness: ${fitness}`}</h2>
         </div>
         <ResponsiveContainer aspect={6}>
           <LineChart
@@ -84,41 +72,37 @@ function App() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            {bestValue && (
-              <ReferenceLine x={Math.round(bestValue)} stroke="#DB001C" />
-            )}
-            {bestValue && (
-              <ReferenceDot
-                r={5}
-                fill="#DB001C"
-                stroke="#000"
-                y={-30}
-                x={Math.round(bestValue)}
-              />
-            )}
-            {population.map((individual, index) => (
-              <ReferenceDot
-                r={4}
-                fill="#71c842"
-                stroke="#71c842"
-                y={-30}
-                key={index}
-                x={Math.round(individual)}
-              />
-            ))}
+
+            <ReferenceLine x={Math.round(value)} stroke="#DB001C" />
+
+            <ReferenceDot
+              r={5}
+              fill="#DB001C"
+              stroke="#000"
+              y={-30}
+              x={Math.round(value)}
+            />
+            {population &&
+              population.map((individual, index) => (
+                <ReferenceDot
+                  r={4}
+                  fill="#71c842"
+                  stroke="#71c842"
+                  y={-30}
+                  key={index}
+                  x={Math.round(individual)}
+                />
+              ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
       <div className="container">
         <div className="label-container">
-          <h2 className="label">{`Iterações: ${years}`}</h2>
-          {/*<h2 className="label">{`Máximo valor atual: ${TEST_FUNCTION(*/}
-          {/*  bestValue*/}
-          {/*).toFixed(4)}`}</h2>*/}
+          <h2 className="label">{`Gerações: ${generation}`}</h2>
         </div>
         <ResponsiveContainer aspect={6}>
           <LineChart
-            data={lastValues}
+            data={generationsData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <Line
@@ -128,8 +112,15 @@ function App() {
               dot={false}
               isAnimationActive={false}
             />
+            <Line
+              type="monotone"
+              dataKey="populationMean"
+              stroke="#71c842"
+              dot={false}
+              isAnimationActive={false}
+            />
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={false}/>
+            <XAxis dataKey="name" tick={false} />
             <YAxis />
           </LineChart>
         </ResponsiveContainer>

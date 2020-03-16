@@ -1,6 +1,9 @@
-import { BEST_RESULT, getRandomNumberInInterval, getItem } from "../utils";
+import { BEST_RESULT, getItem } from "../utils";
 
-export const POPULATION_SIZE = 5;
+export const getRandomNumberInInterval = (min = DOMAIN[0], max = DOMAIN[1]) =>
+  Math.random() * (max - min + 1) + min;
+
+export const POPULATION_SIZE = 100;
 
 export const TEST_FUNCTION = x =>
   2 * Math.cos(0.39 * x) +
@@ -41,9 +44,9 @@ export const CROSS_OVER_INDIVIDUAL = async list => {
   );
 };
 
-export const MUTATE_INDIVIDUAL = individual => {
+export const MUTATE_INDIVIDUAL = (individual, mutationConfig) => {
+  const { rate: TAX_MUT } = mutationConfig;
   const MAX = DOMAIN[1] * 0.5;
-  const TAX_MUT = 0.1;
   const mutatedIndividual =
     individual +
     (getRandomNumberInInterval(DOMAIN[0], MAX) -

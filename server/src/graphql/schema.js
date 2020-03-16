@@ -1,6 +1,38 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLList, GraphQLFloat } from "graphql";
 
 import SubscriptionType from "./subscriptions/SubscriptionType";
+import {getList, PAST_LIST, PAST_POPULATION_MEAN_LIST} from '../utils'
+
+const ResultObjectType = new GraphQLObjectType({
+  name: "Result",
+  description: "Result data",
+  fields: () => ({
+    fitness: {
+      type: GraphQLFloat,
+      resolve: ({ fitness }) => fitness
+    },
+    value: {
+      type: GraphQLFloat,
+      resolve: ({ value }) => value
+    },
+    generation: {
+      type: GraphQLInt,
+      resolve: ({ generation }) => generation
+    },
+    population: {
+      type: new GraphQLList(GraphQLFloat),
+      resolve: ({ population }) => population,
+    },
+    pastResults: {
+      type: new GraphQLList(GraphQLFloat),
+      resolve: async () => getList(PAST_LIST),
+    },
+    populationResultsMean: {
+      type: GraphQLList(GraphQLFloat),
+      resolve: async () => getList(PAST_POPULATION_MEAN_LIST)
+    }
+  })
+});
 
 const QueryType = new GraphQLObjectType({
   name: "Query",
@@ -9,6 +41,10 @@ const QueryType = new GraphQLObjectType({
     status: {
       type: GraphQLString,
       resolve: () => "online"
+    },
+    results: {
+      type: ResultObjectType,
+      resolve: () => ({ fitness: 0, generation: 0 })
     }
   })
 });

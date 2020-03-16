@@ -5,7 +5,7 @@ import { createGraphQLServer } from "../graphql/server";
 import {
   BEST_RESULT,
   GENERATIONS,
-  PAST_LIST,
+  PAST_LIST, PAST_POPULATION_MEAN_LIST,
   POPULATION_LIST,
   redis,
   STEPS,
@@ -14,6 +14,13 @@ import {
 
 global.workers = [];
 global.step = STEPS.CREATE;
+global.mutationConfig = {
+  baseRate: 0.1,
+  rate: 0.1,
+  generationsWithRate: 0,
+  maxGenerationsWithRate: 0,
+  lastChange: null
+}
 
 const cpuCount = os.cpus().length;
 
@@ -23,6 +30,7 @@ const setupMaster = () => {
   redis.del(PAST_LIST);
   redis.del(GENERATIONS);
   redis.del(BEST_RESULT);
+  redis.del(PAST_POPULATION_MEAN_LIST);
   for (let i = 0; i < cpuCount; i++) {
     const worker = cluster.fork();
     global.workers.push(worker);

@@ -1,0 +1,27 @@
+type NewResultPayload {
+  fitness: Float
+  value: Float
+  generation: Int
+  population: [Float]
+  populationResultMean: Float
+}
+
+"""The root of all... queries"""
+type Query {
+  status: String
+  results: Result
+}
+
+"""Result data"""
+type Result {
+  fitness: Float
+  value: Float
+  generation: Int
+  population: [Float]
+  pastResults: [Float]
+  populationResultsMean: [Float]
+}
+
+type Subscription {
+  NewResult: NewResultPayload
+}

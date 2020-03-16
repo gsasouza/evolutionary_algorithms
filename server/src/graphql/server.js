@@ -8,7 +8,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql'
 import schema from './schema'
 
-const PORT = 3000;
+const PORT = 5000;
 
 export const createGraphQLServer = () => {
   const app = new Koa();

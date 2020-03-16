@@ -21,8 +21,7 @@ import handleNewResult from "../graphql/subscriptions/handleNewResult";
 const DELAY = 100;
 
 export const selectIndividual = async ({ payload }) => {
-  const { mutationConfig } = payload;
-  const resultList = await getList(TESTED_LIST);
+  const { mutationConfig, resultList } = payload;
   const newIndividual = await CROSS_OVER_INDIVIDUAL(resultList);
   const mutatedIndividual = MUTATE_INDIVIDUAL(newIndividual, mutationConfig);
   addItemToList(POPULATION_LIST, mutatedIndividual, () =>

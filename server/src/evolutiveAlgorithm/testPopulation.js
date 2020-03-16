@@ -101,17 +101,17 @@ const adjustMutationRate = async currentBestResult => {
 };
 
 const handleSetupSelection = async () => {
-  const testResults = await getList(TESTED_LIST);
-  const bestResult = await calculateBestResult(testResults);
+  const resultList = await getList(TESTED_LIST);
+  const bestResult = await calculateBestResult(resultList);
   await adjustMutationRate(bestResult);
   recreatePopulation(bestResult);
-  testResults
+  resultList
     .filter((_, index) => index !== bestResult.index)
     .forEach((individual, index) => {
       const worker = getBalancedWorker(index);
       worker.send({
         type: WORKER_PROCESS_TYPES.SELECT_INDIVIDUAL,
-        payload: { individual, mutationConfig: global.mutationConfig }
+        payload: { individual, mutationConfig: global.mutationConfig, resultList }
       });
     });
 };

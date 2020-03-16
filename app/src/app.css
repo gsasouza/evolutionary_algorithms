@@ -1,0 +1,23 @@
+body {
+    font-family: Tahoma, sans-serif;
+    color: rgb(30, 30, 30);
+}
+.label {
+    margin: 1rem;
+    display: inline;
+}
+.label-container {
+    margin: 1rem;
+    text-align: center;
+}
+h1 {
+    text-align: center;
+}
+
+.container {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid #8884d8;
+    border-radius: 10px;
+    box-shadow: 2px 2px 71px -28px rgba(138,138,138,1);
+}

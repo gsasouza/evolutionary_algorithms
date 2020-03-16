@@ -1,0 +1,42 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^14.6.0",
+    "graphql-playground-middleware-koa": "^1.6.12",
+    "graphql-relay": "^0.6.0",
+    "graphql-subscriptions": "^1.1.0",
+    "kcors": "^2.2.2",
+    "koa": "^2.11.0",
+    "koa-graphql": "^0.8.0",
+    "koa-router": "^8.0.8",
+    "redis": "^3.0.2",
+    "subscriptions-transport-ws": "^0.9.16"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.7",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-async-generator-functions": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
+    "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
+    "babel-loader": "^8.0.6",
+    "detect-file": "^1.0.0",
+    "reload-server-webpack-plugin": "^1.0.1",
+    "resolve-dir": "^1.0.1",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "scripts": {
+    "start": "node build",
+    "build": "webpack --config webpack.prod.config.js --progress",
+    "dev": "webpack --watch --progress --config webpack.config.js"
+  }
+}

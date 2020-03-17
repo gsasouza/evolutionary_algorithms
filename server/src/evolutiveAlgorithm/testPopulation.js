@@ -12,7 +12,7 @@ import { WORKER_PROCESS_TYPES, recreatePopulation } from "./index";
 
 export const testIndividual = ({ payload }) => {
   const { individual } = payload;
-  const testResult = TEST_FUNCTION(Number.parseFloat(individual));
+  const testResult = TEST_FUNCTION(...JSON.parse(individual).map(v => Number.parseFloat(v)));
   return addItemToList(
     TESTED_LIST,
     { value: individual, result: testResult },
@@ -97,10 +97,11 @@ const handleSetupSelection = async () => {
     });
 };
 
-const calculateBestResult = async testResults => {
+const calculateBestResult = async testResults => {;
   return testResults.reduce(
     (acc, cur, index) => {
       const { result, value } = JSON.parse(cur);
+
       if (result > acc.result) return { value, result, index };
       return acc;
     },

@@ -1,4 +1,4 @@
-import { CREATE_INDIVIDUAL, POPULATION_SIZE } from "./contraints";
+import {CREATE_INDIVIDUAL, getSafeValue, POPULATION_SIZE} from "./contraints";
 import { addItemToList, getListLength } from "../utils/redis";
 import {
   BEST_RESULT,
@@ -38,5 +38,5 @@ export const handleCreatedIndividuals = () => {
 export const recreatePopulation = bestResult => {
   redis.set(BEST_RESULT, JSON.stringify(bestResult));
   redis.del(POPULATION_LIST);
-  addItemToList(POPULATION_LIST, Number.parseFloat(bestResult.value));
+  addItemToList(POPULATION_LIST, getSafeValue(bestResult));
 };

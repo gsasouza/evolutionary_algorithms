@@ -1,8 +1,8 @@
 type NewResultPayload {
   fitness: Float
-  value: Float
+  value: [Float]
   generation: Int
-  population: [Float]
+  population: [[Float]]
   populationResultMean: Float
 }
 
@@ -15,9 +15,9 @@ type Query {
 """Result data"""
 type Result {
   fitness: Float
-  value: Float
+  value: [Float]
   generation: Int
-  population: [Float]
+  population: [[[Float]]]
   pastResults: [Float]
   populationResultsMean: [Float]
 }

@@ -12,7 +12,7 @@ const ResultObjectType = new GraphQLObjectType({
       resolve: ({ fitness }) => fitness
     },
     value: {
-      type: GraphQLFloat,
+      type: GraphQLList(GraphQLFloat),
       resolve: ({ value }) => value
     },
     generation: {
@@ -20,7 +20,7 @@ const ResultObjectType = new GraphQLObjectType({
       resolve: ({ generation }) => generation
     },
     population: {
-      type: new GraphQLList(GraphQLFloat),
+      type: new GraphQLList(GraphQLList(GraphQLList(GraphQLFloat))),
       resolve: ({ population }) => population,
     },
     pastResults: {

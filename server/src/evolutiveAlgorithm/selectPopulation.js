@@ -18,7 +18,7 @@ import { MASTER_PROCESS_TYPES } from "../cluster/handleMaster";
 import { handleCreatedIndividuals } from "./createPopulation";
 import handleNewResult from "../graphql/subscriptions/handleNewResult";
 
-const DELAY = 50;
+const DELAY = 500;
 
 export const selectIndividual = async ({ payload }) => {
   const { mutationRate, resultList, individual, bestResult } = payload;
@@ -66,13 +66,14 @@ const persistResults = async () => {
       return acc + Number.parseFloat(resultData.result);
     }, 0) / results.length;
 
+
   addItemToList(PAST_POPULATION_MEAN_LIST, populationResultMean);
 
   return handleNewResult({
     generation: Number.parseInt(generation),
     fitness: result,
-    value: Number.parseFloat(value),
-    population: population.map(item => Number.parseFloat(item)),
+    value: JSON.parse(value).map(v => Number.parseFloat(v)),
+    population: population.map(item => JSON.parse(item).map(v => Number.parseFloat(v))),
     results,
     populationResultMean
   });

@@ -14,7 +14,7 @@ const NewResultPayloadType = new GraphQLObjectType({
       resolve: ({ fitness }) => fitness
     },
     value: {
-      type: GraphQLFloat,
+      type: GraphQLList(GraphQLFloat),
       resolve: ({ value }) => value
     },
     generation: {
@@ -22,7 +22,7 @@ const NewResultPayloadType = new GraphQLObjectType({
       resolve: ({ generation }) => generation
     },
     population: {
-      type: new GraphQLList(GraphQLFloat),
+      type: new GraphQLList(GraphQLList(GraphQLFloat)),
       resolve: ({ population }) => population
     },
     populationResultMean: {
